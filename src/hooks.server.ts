@@ -1,0 +1,96 @@
+import { building } from "$app/environment";
+import { auth } from "$lib/server/auth"; // path to your auth file
+// Disabled for landing page - no database needed
+// import { cleanupDbCron } from "$lib/server/crons/cleanup-db";
+import { redirect, type Handle, type ServerInit } from "@sveltejs/kit";
+import { sequence } from "@sveltejs/kit/hooks";
+import { svelteKitHandler } from "better-auth/svelte-kit";
+
+export const init: ServerInit = async () => {
+  if (!building) {
+    // Disabled cron job for landing page - no database cleanup needed
+    // cleanupDbCron.execute();
+    // cleanupDbCron.start();
+    // console.info("[Cron] Database cleanup cron job executed and started");
+    process.on("sveltekit:shutdown", async (reason) => {
+      console.info(`[Shutdown] SvelteKit is shutting down: ${reason}`);
+      // cleanupDbCron.stop();
+      // cleanupDbCron.destroy();
+      // console.info("[Shutdown] Cleanup cron job stopped and destroyed");
+      process.exit(0);
+    });
+  }
+};
+
+const protectedRouteGroupName = "(protected)";
+const signInPath = "/login";
+
+const betterAuthHandler = (async ({ event, resolve }) => {
+  return svelteKitHandler({
+    event,
+    resolve,
+    auth,
+    building
+  });
+}) satisfies Handle;
+
+const betterAuthSessionHandler = (async ({ event, resolve }) => {
+  const session = await auth.api.getSession({
+    headers: event.request.headers
+  });
+
+  event.locals.session = session?.session;
+  event.locals.user = session?.user;
+  event.locals.primaryMcAccount = session?.primaryMcAccount;
+
+  return resolve(event);
+}) satisfies Handle;
+
+const protectedHandler = (async ({ event, resolve }) => {
+  const { locals, route, url } = event;
+  if (!locals.user) {
+    if (route.id?.includes(protectedRouteGroupName) || event.isRemoteRequest) {
+      redirect(307, signInPath);
+    }
+  }
+  if (locals.user && locals.session) {
+    if (route.id?.startsWith(signInPath)) {
+      redirect(307, "/dashboard");
+    }
+  }
+  if (!locals.primaryMcAccount) {
+    if (route.id?.includes(protectedRouteGroupName) && !url.pathname.startsWith("/dashboard/connections/minecraft")) {
+      console.info("Redirecting to Minecraft connections setup as no primary Minecraft account is linked.");
+      redirect(307, "/dashboard/connections/minecraft");
+    }
+  }
+  return resolve(event);
+}) satisfies Handle;
+
+const headersHandler = (async ({ event, resolve }) => {
+  const response = await resolve(event);
+
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+
+  if (event.url.pathname.startsWith("/api")) {
+    // Minimal security headers for API endpoints
+    response.headers.set("Referrer-Policy", "no-referrer");
+  } else {
+    // Security headers for web endpoints
+    response.headers.set("X-Frame-Options", "SAMEORIGIN");
+    response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    response.headers.set("Permissions-Policy", "accelerometer=(), autoplay=(), camera=(), encrypted-media=(), fullscreen=(), gyroscope=(), interest-cohort=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), sync-xhr=(), usb=(), xr-spatial-tracking=(), geolocation=()");
+
+    // Cross-Origin policies
+    response.headers.set("Cross-Origin-Embedder-Policy", "unsafe-none");
+    response.headers.set("Cross-Origin-Opener-Policy", "same-origin");
+    response.headers.set("Cross-Origin-Resource-Policy", "cross-origin");
+
+    // Legacy XSS protection
+    response.headers.set("X-XSS-Protection", "1; mode=block");
+  }
+  return response;
+}) satisfies Handle;
+
+export const handle = sequence(betterAuthHandler, betterAuthSessionHandler, protectedHandler, headersHandler) satisfies Handle;
