@@ -8,33 +8,38 @@
   
   const orderId = $derived(page.params.orderId);
   
-  // Mock invoice data (in production, this would come from the database)
+  // Mock invoice data (PREVIEW MODE - Replace with real database fetch in production)
   const invoice = {
-    orderId: orderId,
+    orderId: orderId || "ORD-20260120-TEST",
     status: "Pending",
     issuedDate: "Jan 20, 2026",
     customer: {
-      name: "John Doe",
-      email: "johndoe@example.com",
+      name: "Syukron Maulana (Preview)",
+      email: "syukron@example.com",
       phone: "+62 812 3456 7890"
     },
     product: {
-      name: "Phoenix Pro - Apex Legends",
+      name: "Phoenix Pro : Apex Legends",
       variant: "30 Days",
-      quantity: 2,
-      pricePerUnit: 49.99
+      quantity: 1,
+      pricePerUnit: 49999 // Rp 49.999
     },
     payment: {
       method: "E-Wallet",
-      provider: "Dana",
-      accountNumber: "081234567890",
-      accountName: "HAJI UTONG STORE"
+      provider: "DANA",
+      accountNumber: "0812-3456-7890",
+      accountName: "Admin HAJI UTONG"
     }
   };
   
   const subtotal = invoice.product.pricePerUnit * invoice.product.quantity;
   const uniqueCode = Math.floor(Math.random() * 900) + 100; // Random 3 digits
   const grandTotal = subtotal + uniqueCode;
+  
+  // Format currency as Rupiah
+  function formatRupiah(amount: number) {
+    return `Rp ${amount.toLocaleString('id-ID')}`;
+  }
   
   let uploadedFile = $state<File | null>(null);
   let copySuccess = $state(false);
@@ -78,7 +83,7 @@
           `Open your ${provider} app`,
           "Go to Transfer or Send Money",
           "Enter the account number below",
-          `Transfer exactly $${grandTotal.toFixed(2)}`,
+          `Transfer exactly ${formatRupiah(grandTotal)}`,
           "Take a screenshot of the receipt",
           "Upload the screenshot below"
         ]
@@ -91,7 +96,7 @@
           `Open your banking app or visit ${provider} ATM`,
           "Select Transfer to Other Account",
           "Enter the account number below",
-          `Transfer exactly $${grandTotal.toFixed(2)}`,
+          `Transfer exactly ${formatRupiah(grandTotal)}`,
           "Keep your transaction receipt",
           "Upload the receipt screenshot below"
         ]
@@ -103,7 +108,7 @@
         instructions: [
           "Open any QRIS-supported app",
           "Scan the QR code provided",
-          `Pay exactly $${grandTotal.toFixed(2)}`,
+          `Pay exactly ${formatRupiah(grandTotal)}`,
           "Take a screenshot of the receipt",
           "Upload the screenshot below"
         ]
@@ -115,7 +120,7 @@
         instructions: [
           "Open your crypto wallet",
           "Send to the wallet address below",
-          `Transfer exactly $${grandTotal.toFixed(2)} in USDT`,
+          `Transfer exactly ${formatRupiah(grandTotal)} in USDT`,
           "Wait for confirmation",
           "Upload transaction hash screenshot below"
         ]
@@ -203,8 +208,8 @@
                     <p class="text-sm text-gray-400">{invoice.product.variant}</p>
                   </div>
                   <div class="col-span-2 text-center text-white">{invoice.product.quantity}</div>
-                  <div class="col-span-2 text-right text-white">${invoice.product.pricePerUnit.toFixed(2)}</div>
-                  <div class="col-span-2 text-right text-white font-semibold">${subtotal.toFixed(2)}</div>
+                  <div class="col-span-2 text-right text-white">{formatRupiah(invoice.product.pricePerUnit)}</div>
+                  <div class="col-span-2 text-right text-white font-semibold">{formatRupiah(subtotal)}</div>
                 </div>
               </div>
 
@@ -212,16 +217,16 @@
               <div class="mt-6 space-y-3">
                 <div class="flex justify-between text-gray-300">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>{formatRupiah(subtotal)}</span>
                 </div>
                 <div class="flex justify-between text-gray-300">
                   <span>Unique Code <span class="text-xs text-gray-500">(for verification)</span></span>
-                  <span>+${uniqueCode.toFixed(2)}</span>
+                  <span>+Rp {uniqueCode}</span>
                 </div>
                 <div class="h-px bg-white/10 my-4"></div>
                 <div class="flex justify-between text-2xl font-bold">
                   <span class="text-white">Grand Total</span>
-                  <span class="text-primary drop-shadow-[0_0_15px_rgba(0,188,125,0.5)]">${grandTotal.toFixed(2)}</span>
+                  <span class="text-primary drop-shadow-[0_0_15px_rgba(0,188,125,0.5)]">{formatRupiah(grandTotal)}</span>
                 </div>
               </div>
             </div>
@@ -235,7 +240,7 @@
               
               <div class="bg-primary/5 border border-primary/20 rounded-2xl p-6 mb-6">
                 <p class="text-white font-semibold mb-4">
-                  ⚠️ Please transfer exactly <span class="text-primary text-xl font-bold">${grandTotal.toFixed(2)}</span> to complete your order.
+                  ⚠️ Please transfer exactly <span class="text-primary text-xl font-bold">{formatRupiah(grandTotal)}</span> to complete your order.
                 </p>
                 <p class="text-sm text-gray-400">
                   The unique code helps us verify your payment automatically. Do not round the amount!
