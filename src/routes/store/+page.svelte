@@ -62,46 +62,99 @@
     <div class="min-h-screen bg-background pt-24 md:pt-28">
       <div class="mx-auto max-w-7xl px-6 py-8">
 
-        <!-- Popular Products Section - Compact Horizontal Cards -->
+        <!-- Popular Products Section - Infinite Auto-Scroll Marquee -->
         <section class="mb-16">
           <div class="mb-6 flex items-center justify-between">
             <h2 class="text-2xl font-bold">Popular</h2>
+            <span class="text-xs text-muted-foreground hidden sm:inline">Hover to pause</span>
           </div>
           
-          <!-- Compact Horizontal Cards Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {#each popularProducts as product}
-              <div class="group relative">
-                <div class="absolute -inset-px rounded-lg bg-linear-to-b from-border to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                <Card class="relative overflow-hidden transition-all duration-200 hover:shadow-lg border bg-card/50 backdrop-blur-sm">
-                  <CardContent class="p-4">
-                    <div class="flex items-center gap-4">
-                      <!-- Left: Small Square Thumbnail -->
-                      <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 via-background to-secondary/10 text-3xl">
-                        {product.image}
-                      </div>
-                      
-                      <!-- Middle: Product Info -->
-                      <div class="flex-1 min-w-0">
-                        <div class="mb-1 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary ring-1 ring-primary/20 ring-inset">
-                          {product.badge}
-                        </div>
-                        <h3 class="font-bold text-base truncate">{product.name}</h3>
-                        <p class="text-sm text-muted-foreground truncate">{product.game}</p>
-                      </div>
-                      
-                      <!-- Right: Price & Button -->
-                      <div class="flex flex-col items-end gap-2 flex-shrink-0">
-                        <p class="text-lg font-bold text-primary whitespace-nowrap">${product.price}</p>
-                        <Button size="sm" class="h-8 rounded-lg px-4 backdrop-blur-lg text-xs">
-                          Buy
-                        </Button>
-                      </div>
+          <!-- Marquee Container with Fade Masks -->
+          <div class="relative overflow-hidden">
+            <!-- Left Fade Gradient -->
+            <div class="absolute left-0 top-0 z-10 h-full w-32 bg-gradient-to-r from-background to-transparent pointer-events-none"></div>
+            
+            <!-- Right Fade Gradient -->
+            <div class="absolute right-0 top-0 z-10 h-full w-32 bg-gradient-to-l from-background to-transparent pointer-events-none"></div>
+            
+            <!-- Scrolling Track (Pause on Hover) -->
+            <div class="marquee-track">
+              <!-- First Set of Products -->
+              <div class="marquee-content">
+                {#each popularProducts as product}
+                  <div class="marquee-item">
+                    <div class="group relative">
+                      <div class="absolute -inset-px rounded-lg bg-linear-to-b from-border to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                      <Card class="relative overflow-hidden transition-all duration-200 hover:shadow-lg border bg-card/50 backdrop-blur-sm h-full">
+                        <CardContent class="p-4">
+                          <div class="flex items-center gap-4">
+                            <!-- Left: Small Square Thumbnail -->
+                            <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 via-background to-secondary/10 text-3xl">
+                              {product.image}
+                            </div>
+                            
+                            <!-- Middle: Product Info -->
+                            <div class="flex-1 min-w-0">
+                              <div class="mb-1 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary ring-1 ring-primary/20 ring-inset">
+                                {product.badge}
+                              </div>
+                              <h3 class="font-bold text-base truncate">{product.name}</h3>
+                              <p class="text-sm text-muted-foreground truncate">{product.game}</p>
+                            </div>
+                            
+                            <!-- Right: Price & Button -->
+                            <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                              <p class="text-lg font-bold text-primary whitespace-nowrap">${product.price}</p>
+                              <Button size="sm" class="h-8 rounded-lg px-4 backdrop-blur-lg text-xs">
+                                Buy
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                {/each}
               </div>
-            {/each}
+              
+              <!-- Duplicate Set for Seamless Loop -->
+              <div class="marquee-content" aria-hidden="true">
+                {#each popularProducts as product}
+                  <div class="marquee-item">
+                    <div class="group relative">
+                      <div class="absolute -inset-px rounded-lg bg-linear-to-b from-border to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                      <Card class="relative overflow-hidden transition-all duration-200 hover:shadow-lg border bg-card/50 backdrop-blur-sm h-full">
+                        <CardContent class="p-4">
+                          <div class="flex items-center gap-4">
+                            <!-- Left: Small Square Thumbnail -->
+                            <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 via-background to-secondary/10 text-3xl">
+                              {product.image}
+                            </div>
+                            
+                            <!-- Middle: Product Info -->
+                            <div class="flex-1 min-w-0">
+                              <div class="mb-1 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary ring-1 ring-primary/20 ring-inset">
+                                {product.badge}
+                              </div>
+                              <h3 class="font-bold text-base truncate">{product.name}</h3>
+                              <p class="text-sm text-muted-foreground truncate">{product.game}</p>
+                            </div>
+                            
+                            <!-- Right: Price & Button -->
+                            <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                              <p class="text-lg font-bold text-primary whitespace-nowrap">${product.price}</p>
+                              <Button size="sm" class="h-8 rounded-lg px-4 backdrop-blur-lg text-xs">
+                                Buy
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -153,3 +206,38 @@
 <div class="fixed right-4 bottom-4 rounded-md bg-card">
   <ThemeSelector />
 </div>
+
+<style>
+  /* Marquee Animation */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee-track {
+    display: flex;
+    width: fit-content;
+    animation: marquee 30s linear infinite;
+  }
+
+  /* Pause animation on hover */
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  .marquee-content {
+    display: flex;
+    flex-shrink: 0;
+    gap: 1rem;
+    padding-right: 1rem;
+  }
+
+  .marquee-item {
+    width: 420px;
+    flex-shrink: 0;
+  }
+</style>
