@@ -1,8 +1,8 @@
 <script lang="ts">
   import { page } from "$app/state";
   import Header from "$components/header.svelte";
-  import { Card, CardContent, CardHeader } from "$ui/card";
   import ThemeSelector from "$components/theme-selector.svelte";
+  import { Card } from "$ui/card";
   
   const gameSlug = $derived(page.params.game);
   
@@ -70,32 +70,45 @@
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {#each products as product}
         <a href={`/store/${gameSlug}/${product.id}`} class="group">
-          <Card class="h-full transition-all hover:-translate-y-1 hover:shadow-lg">
-            <CardHeader class="p-0">
-              <div class="flex aspect-square items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-                <div class="text-center">
-                  <div class="mb-2 text-5xl">🛡️</div>
-                  <div class="px-4">
-                    {#each product.features as feature}
-                      <span class="mb-1 mr-1 inline-block rounded-full bg-primary/20 px-2 py-0.5 text-xs">
-                        {feature}
-                      </span>
-                    {/each}
+          <div class="group relative">
+            <!-- Hover Border Glow -->
+            <div class="absolute -inset-px rounded-3xl bg-linear-to-b from-border to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            
+            <!-- Card with Full Bleed Background -->
+            <Card class="relative aspect-[3/4] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20 border border-white/10 bg-neutral-900 rounded-3xl p-0">
+              <!-- Background Image/Gradient (Full Bleed) -->
+              <div class="absolute inset-0 w-full h-full">
+                <div class="flex w-full h-full items-center justify-center bg-gradient-to-br from-primary/30 via-neutral-800 to-secondary/30">
+                  <div class="text-7xl opacity-20">🛡️</div>
+                </div>
+              </div>
+              
+              <!-- Feature Tags (Top Right) -->
+              <div class="absolute top-3 right-3 flex flex-col gap-1.5">
+                {#each product.features.slice(0, 3) as feature}
+                  <span class="inline-block rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-semibold text-white border border-white/10">
+                    {feature}
+                  </span>
+                {/each}
+              </div>
+              
+              <!-- Content Overlay with Gradient (Bottom) -->
+              <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/90 to-transparent p-4 pt-12">
+                <h3 class="text-base font-bold text-white group-hover:text-primary transition-colors mb-2">{product.name}</h3>
+                
+                <!-- Rating -->
+                <div class="flex items-center gap-2 text-sm mb-3">
+                  <div class="flex items-center text-yellow-400">
+                    ⭐ <span class="ml-1">{product.rating}</span>
                   </div>
+                  <span class="text-gray-400 text-xs">({product.reviews})</span>
                 </div>
+                
+                <!-- Price -->
+                <p class="text-xl font-bold text-primary">${product.price}</p>
               </div>
-            </CardHeader>
-            <CardContent class="p-4">
-              <h3 class="mb-2 text-lg font-semibold group-hover:text-primary">{product.name}</h3>
-              <div class="mb-3 flex items-center gap-2 text-sm">
-                <div class="flex items-center text-yellow-500">
-                  ⭐ {product.rating}
-                </div>
-                <span class="text-muted-foreground">({product.reviews} reviews)</span>
-              </div>
-              <p class="text-xl font-bold text-primary">${product.price}</p>
-            </CardContent>
-          </Card>
+            </Card>
+          </div>
         </a>
       {/each}
     </div>
