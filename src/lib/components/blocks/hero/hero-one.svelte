@@ -1,10 +1,19 @@
 <script lang="ts">
   import LightRays from "$components/reactbits/LightRays.svelte";
   import { Button } from "$ui/button";
+  import PanoramaViewer from "./PanoramaViewer.svelte";
 
   // Generate random hue rotation value (0-360) on component mount
   let randomHue = $state<number>(Math.floor(Math.random() * 361));
-  let imageLoaded = $state<boolean>(false);
+  let viewerReady = $state<boolean>(false);
+
+  // Simulate loading for smooth appearance
+  $effect(() => {
+    const timer = setTimeout(() => {
+      viewerReady = true;
+    }, 500);
+    return () => clearTimeout(timer);
+  });
 </script>
 
 <div class="relative isolate">
@@ -32,31 +41,35 @@
 
         <div class="relative mt-8 overflow-hidden px-2 sm:mt-12 sm:mr-0 md:mt-20">
           <div class="relative mx-auto max-w-6xl overflow-hidden rounded-2xl border bg-background p-4 shadow-lg inset-shadow-2xs shadow-zinc-950/15 ring-background inset-shadow-white/20">
-            <div class="relative w-full aspect-video">
-              {#if !imageLoaded}
-                <div class="absolute size-full animate-pulse rounded-lg border border-border bg-accent"></div>
+            <div class="relative w-full aspect-video overflow-hidden rounded-lg">
+              {#if !viewerReady}
+                <div class="absolute inset-0 animate-pulse rounded-lg border border-border bg-accent"></div>
               {/if}
               
-              <!-- Layer 1: Background Landscape -->
-              <div class="absolute inset-0 rounded-lg overflow-hidden">
-                <img 
-                  src="/assets/images/minecraft-landscape.png" 
-                  alt="Minecraft Landscape" 
-                  class="size-full object-cover"
-                  onload={() => imageLoaded = true}
-                />
+              <!-- Layer 1: 3D Panorama Background (Draggable) -->
+              <div class="absolute inset-0">
+                <PanoramaViewer imagePath="/assets/images/minecraft-landscape.png" />
               </div>
               
-              <!-- Layer 2: Sheep with Random Color Filter -->
-              <div class="absolute inset-0 flex items-center justify-center">
+              <!-- Layer 2: Fixed Centered Sheep with Random Color (No Pointer Events) -->
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <img 
                   src="/assets/images/minecraft-sheep.png" 
                   alt="Minecraft Sheep" 
-                  class="h-3/4 w-auto object-contain transition-opacity duration-1000"
-                  style="filter: hue-rotate({randomHue}deg);"
-                  class:opacity-0={!imageLoaded}
-                  class:opacity-100={imageLoaded}
+                  class="h-3/4 w-auto object-contain transition-all duration-1000 drop-shadow-2xl"
+                  style="filter: hue-rotate({randomHue}deg); transition: filter 0.3s ease;"
+                  class:opacity-0={!viewerReady}
+                  class:opacity-100={viewerReady}
                 />
+              </div>
+
+              <!-- Hint text for user interaction -->
+              <div class="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none">
+                <div class="text-xs text-white/60 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full transition-opacity duration-1000"
+                     class:opacity-0={!viewerReady}
+                     class:opacity-100={viewerReady}>
+                  Drag to explore • Sheep color: {randomHue}°
+                </div>
               </div>
             </div>
           </div>

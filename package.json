@@ -96,9 +96,11 @@
   },
   "dependencies": {
     "@node-rs/argon2": "^2.0.2",
+    "@types/three": "^0.182.0",
     "drizzle-orm": "^0.45.1",
     "node-cron": "^4.2.1",
-    "postgres": "^3.4.8"
+    "postgres": "^3.4.8",
+    "three": "^0.182.0"
   },
   "engines": {
     "node": ">=24",
