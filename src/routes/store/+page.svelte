@@ -4,15 +4,8 @@
   import ThemeSelector from "$components/theme-selector.svelte";
   import { Button } from "$ui/button";
   import { Card, CardContent, CardHeader } from "$ui/card";
-  import { onMount } from "svelte";
   
   let selectedPlatform = $state<string>("Desktop");
-  
-  // Auto-scroll carousel state
-  let carouselContainer = $state<HTMLDivElement>(null!);
-  let isHovering = $state<boolean>(false);
-  let autoScrollInterval: number | null = null;
-  let currentScrollPosition = $state<number>(0);
   
   const popularProducts = [
     { id: 1, name: "Phoenix Pro", game: "Apex Legends", price: 49.99, image: "🎮", badge: "Best Seller" },
@@ -25,42 +18,6 @@
   ];
   
   const platforms = ["Desktop", "Android", "iOS"];
-  
-  // Auto-scroll logic
-  onMount(() => {
-    if (!carouselContainer) return;
-    
-    const startAutoScroll = () => {
-      autoScrollInterval = window.setInterval(() => {
-        if (!carouselContainer || isHovering) return;
-        
-        const cardWidth = 300 + 24; // card width (300px) + gap (24px)
-        const containerWidth = carouselContainer.scrollWidth;
-        const visibleWidth = carouselContainer.clientWidth;
-        const maxScroll = containerWidth - visibleWidth;
-        
-        currentScrollPosition += cardWidth;
-        
-        // Loop back to start when reaching the end
-        if (currentScrollPosition >= maxScroll) {
-          currentScrollPosition = 0;
-        }
-        
-        carouselContainer.scrollTo({
-          left: currentScrollPosition,
-          behavior: 'smooth'
-        });
-      }, 3000); // Auto-scroll every 3 seconds
-    };
-    
-    startAutoScroll();
-    
-    return () => {
-      if (autoScrollInterval) {
-        clearInterval(autoScrollInterval);
-      }
-    };
-  });
   
   const games = {
     Desktop: [
@@ -102,56 +59,49 @@
   </div>
 
   <main class="overflow-hidden">
-    <div class="min-h-screen bg-background pt-24 md:pt-36">
-      <div class="mx-auto max-w-7xl px-6 py-12">
-        
-        <!-- Store Header -->
-        <div class="mb-16 text-center">
-          <h1 class="text-6xl font-black text-balance md:text-7xl lg:text-[5.25rem]">STORE</h1>
-          <p class="mx-auto mt-8 max-w-2xl text-lg text-balance text-muted-foreground">Upgrade your gaming experience with our premium DLCs</p>
-        </div>
+    <div class="min-h-screen bg-background pt-24 md:pt-28">
+      <div class="mx-auto max-w-7xl px-6 py-8">
 
-        <!-- Popular Products Section - Auto-Scrolling Carousel -->
+        <!-- Popular Products Section - Compact Horizontal Cards -->
         <section class="mb-16">
-          <div class="mb-8 flex items-center justify-between">
-            <h2 class="text-3xl font-bold">Popular</h2>
-            <span class="text-sm text-muted-foreground hidden sm:inline">Auto-scrolling • Hover to pause</span>
+          <div class="mb-6 flex items-center justify-between">
+            <h2 class="text-2xl font-bold">Popular</h2>
           </div>
           
-          <!-- Horizontal Scrollable Container with Auto-Scroll -->
-          <div class="relative -mx-6 px-6">
-            <div 
-              bind:this={carouselContainer}
-              onmouseenter={() => isHovering = true}
-              onmouseleave={() => isHovering = false}
-              class="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide"
-            >
-              {#each popularProducts as product}
-                <div class="min-w-[300px] snap-center flex-shrink-0">
-                  <div class="group relative">
-                    <div class="absolute -inset-px rounded-xl bg-linear-to-b from-border to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
-                    <Card class="relative h-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border bg-card/50 backdrop-blur-sm">
-                      <CardHeader class="p-0">
-                        <div class="flex aspect-square items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 text-6xl">
-                          {product.image}
-                        </div>
-                      </CardHeader>
-                      <CardContent class="p-4">
-                        <div class="mb-2 inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary ring-1 ring-primary/20 ring-inset">
+          <!-- Compact Horizontal Cards Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {#each popularProducts as product}
+              <div class="group relative">
+                <div class="absolute -inset-px rounded-lg bg-linear-to-b from-border to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                <Card class="relative overflow-hidden transition-all duration-200 hover:shadow-lg border bg-card/50 backdrop-blur-sm">
+                  <CardContent class="p-4">
+                    <div class="flex items-center gap-4">
+                      <!-- Left: Small Square Thumbnail -->
+                      <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 via-background to-secondary/10 text-3xl">
+                        {product.image}
+                      </div>
+                      
+                      <!-- Middle: Product Info -->
+                      <div class="flex-1 min-w-0">
+                        <div class="mb-1 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary ring-1 ring-primary/20 ring-inset">
                           {product.badge}
                         </div>
-                        <h3 class="mb-1 font-semibold text-lg">{product.name}</h3>
-                        <p class="mb-2 text-sm text-muted-foreground">{product.game}</p>
-                        <p class="text-lg font-bold text-primary">${product.price}</p>
-                        <Button size="sm" class="mt-3 w-full rounded-xl px-5 backdrop-blur-lg">
-                          Buy Now
+                        <h3 class="font-bold text-base truncate">{product.name}</h3>
+                        <p class="text-sm text-muted-foreground truncate">{product.game}</p>
+                      </div>
+                      
+                      <!-- Right: Price & Button -->
+                      <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                        <p class="text-lg font-bold text-primary whitespace-nowrap">${product.price}</p>
+                        <Button size="sm" class="h-8 rounded-lg px-4 backdrop-blur-lg text-xs">
+                          Buy
                         </Button>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              {/each}
-            </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            {/each}
           </div>
         </section>
 
@@ -203,14 +153,3 @@
 <div class="fixed right-4 bottom-4 rounded-md bg-card">
   <ThemeSelector />
 </div>
-
-<style>
-  /* Hide scrollbar while keeping scroll functionality */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-</style>
