@@ -42,12 +42,17 @@
   }
   
   let uploadedFile = $state<File | null>(null);
+  let uploadedFileURL = $state<string | null>(null);
   let copySuccess = $state(false);
+  let invoiceStatus = $state<'PENDING' | 'VALIDATION'>('PENDING');
+  let showSuccessMessage = $state(false);
   
   function handleFileChange(e: Event) {
     const target = e.target as HTMLInputElement;
     if (target.files && target.files[0]) {
       uploadedFile = target.files[0];
+      // Create object URL for preview
+      uploadedFileURL = URL.createObjectURL(target.files[0]);
     }
   }
   
@@ -62,7 +67,19 @@
       alert("Please upload payment proof first");
       return;
     }
-    alert("Payment confirmation submitted! We'll verify it shortly.");
+    
+    // Transition to VALIDATION status
+    invoiceStatus = 'VALIDATION';
+    
+    // Show success message
+    showSuccessMessage = true;
+    setTimeout(() => showSuccessMessage = false, 5000);
+  }
+  
+  function viewPaymentProof() {
+    if (uploadedFileURL) {
+      window.open(uploadedFileURL, '_blank');
+    }
   }
   
   function handleCancelInvoice() {
@@ -159,10 +176,27 @@
             <h1 class="text-4xl font-black text-white mb-2">Invoice #{orderId}</h1>
             <p class="text-muted-foreground">Issued on {invoice.issuedDate}</p>
           </div>
-          <div class="rounded-full px-6 py-2 bg-yellow-500/10 border border-yellow-500/30">
-            <span class="text-yellow-500 font-semibold text-lg">⏳ {invoice.status}</span>
-          </div>
+          
+          <!-- Dynamic Status Badge -->
+          {#if invoiceStatus === 'PENDING'}
+            <div class="rounded-full px-6 py-2 bg-yellow-500/10 border border-yellow-500/30">
+              <span class="text-yellow-500 font-semibold text-lg">⏳ Pending</span>
+            </div>
+          {:else if invoiceStatus === 'VALIDATION'}
+            <div class="rounded-full px-6 py-2 bg-blue-500/10 border border-blue-500/30">
+              <span class="text-blue-400 font-semibold text-lg">🔍 In Review</span>
+            </div>
+          {/if}
         </div>
+        
+        <!-- Success Message Toast -->
+        {#if showSuccessMessage}
+          <div class="mb-6 rounded-2xl bg-primary/10 border border-primary/30 p-4 animate-pulse">
+            <p class="text-primary font-semibold text-center">
+              ✓ Payment proof uploaded! Please wait for validation.
+            </p>
+          </div>
+        {/if}
 
         <!-- Main Invoice Card -->
         <Card class="overflow-hidden border border-green-500/20 bg-neutral-900/90 backdrop-blur-sm rounded-3xl mb-6 shadow-[0_0_30px_rgba(0,188,125,0.15)]">
@@ -286,62 +320,95 @@
               </div>
             </div>
 
-            <!-- Section 4: Upload Payment Proof -->
+            <!-- Section 4: Upload Payment Proof / Submitted Status -->
             <div>
-              <h2 class="text-2xl font-bold text-primary mb-6">Upload Payment Proof</h2>
+              <h2 class="text-2xl font-bold text-primary mb-6">
+                {invoiceStatus === 'PENDING' ? 'Upload Payment Proof' : 'Payment Proof Submitted'}
+              </h2>
               
-              <!-- Custom File Input -->
-              <label 
-                class="block border-2 border-dashed border-white/20 rounded-2xl p-8 text-center cursor-pointer transition-all hover:border-primary hover:bg-primary/5 group"
-              >
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onchange={handleFileChange}
-                  class="hidden"
-                />
+              {#if invoiceStatus === 'PENDING'}
+                <!-- Custom File Input (PENDING STATE) -->
+                <label 
+                  class="block border-2 border-dashed border-white/20 rounded-2xl p-8 text-center cursor-pointer transition-all hover:border-primary hover:bg-primary/5 group"
+                >
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onchange={handleFileChange}
+                    class="hidden"
+                  />
+                  
+                  {#if uploadedFile}
+                    <div class="text-primary">
+                      <div class="text-5xl mb-3">✓</div>
+                      <p class="text-lg font-semibold text-white">{uploadedFile.name}</p>
+                      <p class="text-sm text-gray-400 mt-2">Click to change file</p>
+                    </div>
+                  {:else}
+                    <div class="text-gray-400 group-hover:text-primary transition-colors">
+                      <div class="text-5xl mb-3">📤</div>
+                      <p class="text-lg font-semibold text-white">Click to Upload Screenshot</p>
+                      <p class="text-sm mt-2">Accepted formats: JPG, PNG (Max 5MB)</p>
+                    </div>
+                  {/if}
+                </label>
+
+                <!-- Confirm Payment Button -->
+                <Button 
+                  onclick={handleConfirmPayment}
+                  class="w-full mt-6 bg-primary hover:bg-primary/90 text-black font-bold text-lg py-6 rounded-xl shadow-[0_0_20px_rgba(0,188,125,0.3)] transition-all hover:shadow-[0_0_30px_rgba(0,188,125,0.5)]"
+                  size="lg"
+                >
+                  Confirm Payment
+                </Button>
+
+                <p class="text-center text-sm text-gray-400 mt-4">
+                  Your order will be processed within 5-15 minutes after payment verification
+                </p>
                 
-                {#if uploadedFile}
-                  <div class="text-primary">
-                    <div class="text-5xl mb-3">✓</div>
-                    <p class="text-lg font-semibold text-white">{uploadedFile.name}</p>
-                    <p class="text-sm text-gray-400 mt-2">Click to change file</p>
-                  </div>
-                {:else}
-                  <div class="text-gray-400 group-hover:text-primary transition-colors">
-                    <div class="text-5xl mb-3">📤</div>
-                    <p class="text-lg font-semibold text-white">Click to Upload Screenshot</p>
-                    <p class="text-sm mt-2">Accepted formats: JPG, PNG (Max 5MB)</p>
-                  </div>
-                {/if}
-              </label>
-
-              <!-- Confirm Payment Button -->
-              <Button 
-                onclick={handleConfirmPayment}
-                class="w-full mt-6 bg-primary hover:bg-primary/90 text-black font-bold text-lg py-6 rounded-xl shadow-[0_0_20px_rgba(0,188,125,0.3)] transition-all hover:shadow-[0_0_30px_rgba(0,188,125,0.5)]"
-                size="lg"
-              >
-                Confirm Payment
-              </Button>
-
-              <p class="text-center text-sm text-gray-400 mt-4">
-                Your order will be processed within 5-15 minutes after payment verification
-              </p>
+              {:else if invoiceStatus === 'VALIDATION'}
+                <!-- Payment Submitted View (VALIDATION STATE) -->
+                <div class="bg-white/5 border border-primary/20 rounded-2xl p-8 text-center">
+                  <div class="text-6xl mb-4">✅</div>
+                  <h3 class="text-xl font-bold text-white mb-3">Payment Proof Submitted</h3>
+                  <p class="text-gray-400 mb-6">
+                    Your payment proof is being reviewed by our team. You will receive an email confirmation once verified.
+                  </p>
+                  
+                  <!-- View Proof Button -->
+                  {#if uploadedFileURL}
+                    <Button
+                      onclick={viewPaymentProof}
+                      variant="outline"
+                      class="border border-white/20 hover:bg-white/5 text-white"
+                      size="lg"
+                    >
+                      <span class="mr-2">👁️</span>
+                      View My Proof
+                    </Button>
+                  {/if}
+                  
+                  <p class="text-sm text-gray-500 mt-6">
+                    Estimated verification time: 5-15 minutes
+                  </p>
+                </div>
+              {/if}
             </div>
 
           </CardContent>
         </Card>
 
-        <!-- Cancel Invoice Button -->
-        <div class="text-center">
-          <button
-            onclick={handleCancelInvoice}
-            class="text-red-500 hover:text-red-400 font-semibold border-2 border-red-500/30 hover:border-red-500/50 rounded-xl px-8 py-3 transition-all"
-          >
-            Cancel Invoice
-          </button>
-        </div>
+        <!-- Cancel Invoice Button (Only show in PENDING state) -->
+        {#if invoiceStatus === 'PENDING'}
+          <div class="text-center">
+            <button
+              onclick={handleCancelInvoice}
+              class="text-red-500 hover:text-red-400 font-semibold border-2 border-red-500/30 hover:border-red-500/50 rounded-xl px-8 py-3 transition-all"
+            >
+              Cancel Invoice
+            </button>
+          </div>
+        {/if}
 
       </div>
     </div>
