@@ -3,7 +3,7 @@
   import LightRays from "$components/reactbits/LightRays.svelte";
   import ThemeSelector from "$components/theme-selector.svelte";
   import { Button } from "$ui/button";
-  import { Card, CardContent, CardHeader } from "$ui/card";
+  import { Card, CardContent } from "$ui/card";
   
   let selectedPlatform = $state<string>("Desktop");
   
@@ -182,16 +182,21 @@
               <a href={`/store/${game.slug}`} class="group">
                 <div class="group relative">
                   <div class="absolute -inset-px rounded-3xl bg-linear-to-b from-border to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                  <Card class="relative h-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20 border border-white/10 bg-neutral-900/80 backdrop-blur-sm rounded-3xl">
-                    <CardHeader class="p-0">
-                      <div class="flex aspect-square items-center justify-center bg-gradient-to-br from-primary/20 via-neutral-800 to-secondary/20 text-5xl rounded-t-3xl">
+                  
+                  <!-- Card with Full Bleed Image -->
+                  <Card class="relative aspect-square overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20 border border-white/10 bg-neutral-900 rounded-3xl p-0">
+                    <!-- Background Image (Full Bleed) -->
+                    <div class="absolute inset-0 w-full h-full">
+                      <div class="flex w-full h-full items-center justify-center bg-gradient-to-br from-primary/20 via-neutral-800 to-secondary/20 text-6xl">
                         {game.icon}
                       </div>
-                    </CardHeader>
-                    <CardContent class="p-3">
-                      <h3 class="mb-1 text-sm font-bold group-hover:text-primary transition-colors truncate">{game.name}</h3>
-                      <p class="text-xs text-muted-foreground">{game.productCount} products</p>
-                    </CardContent>
+                    </div>
+                    
+                    <!-- Text Overlay with Dark Gradient -->
+                    <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/80 to-transparent p-3 pt-8">
+                      <h3 class="text-sm font-bold text-white group-hover:text-primary transition-colors truncate mb-0.5">{game.name}</h3>
+                      <p class="text-xs text-gray-400">{game.productCount} products</p>
+                    </div>
                   </Card>
                 </div>
               </a>
