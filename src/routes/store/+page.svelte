@@ -177,20 +177,20 @@
         <!-- Games Catalog -->
         <section>
           <h2 class="mb-8 text-3xl font-bold">Browse by Game</h2>
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
             {#each filteredGames as game}
               <a href={`/store/${game.slug}`} class="group">
                 <div class="group relative">
-                  <div class="absolute -inset-px rounded-xl bg-linear-to-b from-border to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
-                  <Card class="relative h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border bg-card/50 backdrop-blur-sm">
+                  <div class="absolute -inset-px rounded-3xl bg-linear-to-b from-border to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                  <Card class="relative h-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20 border border-white/10 bg-neutral-900/80 backdrop-blur-sm rounded-3xl">
                     <CardHeader class="p-0">
-                      <div class="flex aspect-square items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 text-7xl">
+                      <div class="flex aspect-square items-center justify-center bg-gradient-to-br from-primary/20 via-neutral-800 to-secondary/20 text-5xl rounded-t-3xl">
                         {game.icon}
                       </div>
                     </CardHeader>
-                    <CardContent class="p-4">
-                      <h3 class="mb-2 text-lg font-semibold group-hover:text-primary">{game.name}</h3>
-                      <p class="text-sm text-muted-foreground">{game.productCount} products available</p>
+                    <CardContent class="p-3">
+                      <h3 class="mb-1 text-sm font-bold group-hover:text-primary transition-colors truncate">{game.name}</h3>
+                      <p class="text-xs text-muted-foreground">{game.productCount} products</p>
                     </CardContent>
                   </Card>
                 </div>
