@@ -83,15 +83,6 @@
                 </div>
               </div>
               
-              <!-- Feature Tags (Top Right) -->
-              <div class="absolute top-3 right-3 flex flex-col gap-1.5">
-                {#each product.features.slice(0, 3) as feature}
-                  <span class="inline-block rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-semibold text-white border border-white/10">
-                    {feature}
-                  </span>
-                {/each}
-              </div>
-              
               <!-- Content Overlay with Gradient (Bottom) -->
               <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/90 to-transparent p-4 pt-12">
                 <h3 class="text-base font-bold text-white group-hover:text-primary transition-colors mb-2">{product.name}</h3>
