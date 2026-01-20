@@ -155,26 +155,32 @@
         </section>
 
         <!-- Section B: FAQ Accordion -->
-        <section class="mb-16">
-          <h2 class="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+        <section class="mb-16 pt-10">
+          <div class="text-center mb-10">
+            <h2 class="text-3xl font-bold text-primary">Frequently Asked Questions</h2>
+            <p class="text-muted-foreground mt-2">Everything you need to know about our products and services</p>
+          </div>
+          
           <div class="space-y-4">
             {#each faqs as faq}
-              <div class="overflow-hidden border border-white/5 {openFaqId === faq.id ? 'border-primary/30' : ''} bg-neutral-900/80 backdrop-blur-sm rounded-2xl transition-all duration-300">
+              <div class="overflow-hidden border border-white/5 {openFaqId === faq.id ? 'border-primary/30' : ''} bg-white/5 backdrop-blur-sm rounded-2xl transition-all duration-300">
                 <button
                   onclick={() => toggleFaq(faq.id)}
-                  class="w-full flex items-center justify-between p-6 text-left hover:bg-white/5 transition-colors"
+                  class="w-full flex items-center justify-between p-6 text-left hover:bg-white/[0.07] transition-colors"
                 >
-                  <h3 class="text-base font-semibold text-foreground pr-4">{faq.question}</h3>
+                  <h3 class="text-base font-semibold text-white pr-4">{faq.question}</h3>
                   <div class="flex-shrink-0 text-2xl text-primary transition-transform duration-300 {openFaqId === faq.id ? 'rotate-180' : ''}">
                     ▼
                   </div>
                 </button>
                 
                 {#if openFaqId === faq.id}
-                  <div class="px-6 pb-6 pt-0 border-t border-white/5">
-                    <p class="text-sm text-muted-foreground leading-relaxed">
-                      {faq.answer}
-                    </p>
+                  <div class="border-t border-white/5">
+                    <div class="p-6 pt-5">
+                      <p class="text-sm text-gray-400 leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </div>
                   </div>
                 {/if}
               </div>
