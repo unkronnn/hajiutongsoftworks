@@ -5,6 +5,7 @@
   import ThemeSelector from "$components/theme-selector.svelte";
   import { Button } from "$ui/button";
   import { Card, CardContent } from "$ui/card";
+  import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
   
   const orderId = $derived(page.params.orderId);
   
@@ -46,6 +47,8 @@
   let copySuccess = $state(false);
   let invoiceStatus = $state<'PENDING' | 'VALIDATION'>('PENDING');
   let showSuccessMessage = $state(false);
+  let isCheckingStatus = $state(false);
+  let statusToastMessage = $state<string | null>(null);
   
   function handleFileChange(e: Event) {
     const target = e.target as HTMLInputElement;
@@ -80,6 +83,23 @@
     if (uploadedFileURL) {
       window.open(uploadedFileURL, '_blank');
     }
+  }
+  
+  function handleCheckStatus() {
+    // Start checking animation
+    isCheckingStatus = true;
+    statusToastMessage = "Checking payment status...";
+    
+    // Simulate API call with 2 second delay
+    setTimeout(() => {
+      isCheckingStatus = false;
+      statusToastMessage = "Status is up to date";
+      
+      // Clear status message after 3 seconds
+      setTimeout(() => {
+        statusToastMessage = null;
+      }, 3000);
+    }, 2000);
   }
   
   function handleCancelInvoice() {
@@ -177,17 +197,39 @@
             <p class="text-muted-foreground">Issued on {invoice.issuedDate}</p>
           </div>
           
-          <!-- Dynamic Status Badge -->
-          {#if invoiceStatus === 'PENDING'}
-            <div class="rounded-full px-6 py-2 bg-yellow-500/10 border border-yellow-500/30">
-              <span class="text-yellow-500 font-semibold text-lg">⏳ Pending</span>
-            </div>
-          {:else if invoiceStatus === 'VALIDATION'}
-            <div class="rounded-full px-6 py-2 bg-blue-500/10 border border-blue-500/30">
-              <span class="text-blue-400 font-semibold text-lg">🔍 In Review</span>
-            </div>
-          {/if}
+          <!-- Status Badge & Refresh Button -->
+          <div class="flex items-center gap-3">
+            <!-- Dynamic Status Badge -->
+            {#if invoiceStatus === 'PENDING'}
+              <div class="rounded-full px-6 py-2 bg-yellow-500/10 border border-yellow-500/30">
+                <span class="text-yellow-500 font-semibold text-lg">⏳ Pending</span>
+              </div>
+            {:else if invoiceStatus === 'VALIDATION'}
+              <div class="rounded-full px-6 py-2 bg-blue-500/10 border border-blue-500/30">
+                <span class="text-blue-400 font-semibold text-lg">🔍 In Review</span>
+              </div>
+            {/if}
+            
+            <!-- Check Status Button -->
+            <button
+              onclick={handleCheckStatus}
+              disabled={isCheckingStatus}
+              class="flex items-center gap-2 px-4 py-2 rounded-lg bg-transparent border border-white/20 text-white hover:text-primary hover:border-primary/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RefreshCcw class="w-4 h-4 {isCheckingStatus ? 'animate-spin' : ''}" />
+              <span class="hidden sm:inline text-sm font-medium">Check Status</span>
+            </button>
+          </div>
         </div>
+        
+        <!-- Status Toast Message -->
+        {#if statusToastMessage}
+          <div class="mb-6 rounded-2xl bg-white/5 border border-white/10 p-4">
+            <p class="text-white font-semibold text-center">
+              {statusToastMessage}
+            </p>
+          </div>
+        {/if}
         
         <!-- Success Message Toast -->
         {#if showSuccessMessage}
