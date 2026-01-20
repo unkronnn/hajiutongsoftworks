@@ -1,63 +1,10 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
   import LightRays from "$components/reactbits/LightRays.svelte";
   import { Button } from "$ui/button";
-  import { Debounced, IsInViewport } from "runed";
-  import * as skinview3d from "skinview3d";
-  import { untrack } from "svelte";
-  import { innerWidth } from "svelte/reactivity/window";
 
-  // Random Minecraft player skin
-  const skinHashes = ["46acd06e8483b176e8ea39fc12fe105eb3a2a4970f5100057e9d84d4b60bdfa7", "6ac6ca262d67bcfb3dbc924ba8215a18195497c780058a5749de674217721892", "fece7017b1bb13926d1158864b283b8b930271f80a90482f174cca6a17e88236", "226c617fde5b1ba569aa08bd2cb6fd84c93337532a872b3eb7bf66bdd5b395f8", "7cb3ba52ddd5cc82c0b050c3f920f87da36add80165846f479079663805433db", "6c160fbd16adbc4bff2409e70180d911002aebcfa811eb6ec3d1040761aea6dd", "d5c4ee5ce20aed9e33e866c66caa37178606234b3721084bf01d13320fb2eb3f", "b66bc80f002b10371e2fa23de6f230dd5e2f3affc2e15786f65bc9be4c6eb71a", "eee522611005acf256dbd152e992c60c0bb7978cb0f3127807700e478ad97664"] as const;
-
-  let skinHash: string = skinHashes[Math.floor(Math.random() * skinHashes.length)];
-
-  let viewer: skinview3d.SkinViewer;
-  let viewerContainer = $state<HTMLDivElement>(null!);
-  let viewerCanvas = $state<HTMLCanvasElement>(null!);
-  let canvasIsLoading = $state<boolean>(true);
-
-  const siteWidth = new Debounced(() => innerWidth.current, 25);
-
-  const inViewport = new IsInViewport(() => viewerContainer, {
-    rootMargin: "200px",
-    threshold: 0
-  });
-
-  $effect.pre(() => {
-    if (!browser || !viewerContainer || !viewerCanvas || !siteWidth.current || !inViewport.current) return;
-    const containerDimensions = viewerContainer.getBoundingClientRect();
-    untrack(() => {
-      viewer = new skinview3d.SkinViewer({
-        canvas: viewerCanvas,
-        width: containerDimensions.width,
-        height: containerDimensions.height,
-        skin: `https://nmsr.nickac.dev/skin/${skinHash}`,
-        enableControls: true,
-        animation: new skinview3d.IdleAnimation(),
-        zoom: 0.7,
-        background: "#050505",
-        panorama: "/assets/images/panorama.png"
-      });
-      // disable zooming
-      viewer.controls.enableZoom = false;
-      // enable damping (smooth dragging)
-      viewer.controls.enableDamping = true;
-      canvasIsLoading = false;
-    });
-
-    return () => {
-      canvasIsLoading = true;
-      viewer.dispose();
-    };
-  });
-
-  $effect(() => {
-    if (!inViewport.current) {
-      canvasIsLoading = true;
-      viewer?.dispose();
-    }
-  });
+  // Generate random hue rotation value (0-360) on component mount
+  let randomHue = $state<number>(Math.floor(Math.random() * 361));
+  let imageLoaded = $state<boolean>(false);
 </script>
 
 <div class="relative isolate">
@@ -85,14 +32,33 @@
 
         <div class="relative mt-8 overflow-hidden px-2 sm:mt-12 sm:mr-0 md:mt-20">
           <div class="relative mx-auto max-w-6xl overflow-hidden rounded-2xl border bg-background p-4 shadow-lg inset-shadow-2xs shadow-zinc-950/15 ring-background inset-shadow-white/20">
-            {#key siteWidth.current}
-              <div bind:this={viewerContainer} class="relative w-full aspect-video">
-                {#if canvasIsLoading}
-                  <div class="absolute size-full animate-pulse rounded-lg border border-border bg-accent"></div>
-                {/if}
-                <canvas bind:this={viewerCanvas} class="relative size-full transform-gpu overflow-hidden rounded-lg opacity-0 transition-all duration-[3s] data-[loaded=true]:opacity-100" data-loaded={!canvasIsLoading}></canvas>
+            <div class="relative w-full aspect-video">
+              {#if !imageLoaded}
+                <div class="absolute size-full animate-pulse rounded-lg border border-border bg-accent"></div>
+              {/if}
+              
+              <!-- Layer 1: Background Landscape -->
+              <div class="absolute inset-0 rounded-lg overflow-hidden">
+                <img 
+                  src="/assets/images/minecraft-landscape.png" 
+                  alt="Minecraft Landscape" 
+                  class="size-full object-cover"
+                  onload={() => imageLoaded = true}
+                />
               </div>
-            {/key}
+              
+              <!-- Layer 2: Sheep with Random Color Filter -->
+              <div class="absolute inset-0 flex items-center justify-center">
+                <img 
+                  src="/assets/images/minecraft-sheep.png" 
+                  alt="Minecraft Sheep" 
+                  class="h-3/4 w-auto object-contain transition-opacity duration-1000"
+                  style="filter: hue-rotate({randomHue}deg);"
+                  class:opacity-0={!imageLoaded}
+                  class:opacity-100={imageLoaded}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
