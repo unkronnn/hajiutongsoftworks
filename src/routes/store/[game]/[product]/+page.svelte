@@ -54,9 +54,67 @@
   let selectedVariant = $state(variants[2]);
   let quantity = $state(1);
   let whatsapp = $state("");
-  let selectedPayment = $state("E-Wallet");
+  let selectedCategory = $state<string | null>(null);
+  let selectedProvider = $state<string | null>(null);
+  let expandedCategory = $state<string | null>(null);
   
-  const paymentMethods = ["E-Wallet", "QRIS", "Bank Transfer", "Crypto"];
+  const paymentMethods = [
+    {
+      id: "ewallet",
+      name: "E-Wallet",
+      icon: "💳",
+      hasSubOptions: true,
+      subOptions: [
+        { id: "dana", name: "Dana" },
+        { id: "shopeepay", name: "ShopeePay" },
+        { id: "gopay", name: "GoPay" },
+        { id: "ovo", name: "OVO" },
+        { id: "linkaja", name: "LinkAja" }
+      ]
+    },
+    {
+      id: "bank",
+      name: "Bank Transfer",
+      icon: "🏦",
+      hasSubOptions: true,
+      subOptions: [
+        { id: "bca", name: "BCA" },
+        { id: "bri", name: "BRI" },
+        { id: "mandiri", name: "Mandiri" },
+        { id: "jago", name: "Bank Jago" },
+        { id: "bni", name: "BNI" }
+      ]
+    },
+    {
+      id: "qris",
+      name: "QRIS",
+      icon: "📱",
+      hasSubOptions: false
+    },
+    {
+      id: "crypto",
+      name: "Crypto",
+      icon: "₿",
+      hasSubOptions: false
+    }
+  ];
+  
+  function handlePaymentClick(method: typeof paymentMethods[0]) {
+    if (method.hasSubOptions) {
+      // Toggle expansion for methods with sub-options
+      expandedCategory = expandedCategory === method.id ? null : method.id;
+    } else {
+      // Direct selection for methods without sub-options
+      selectedCategory = method.id;
+      selectedProvider = null;
+      expandedCategory = null;
+    }
+  }
+  
+  function handleSubOptionClick(categoryId: string, providerId: string) {
+    selectedCategory = categoryId;
+    selectedProvider = providerId;
+  }
   
   const features = [
     "Advanced ESP (Wallhack)",
@@ -236,18 +294,43 @@
               <Label class="mb-3 block text-base font-semibold">Payment Method</Label>
               <div class="space-y-2">
                 {#each paymentMethods as method}
-                  <button
-                    onclick={() => selectedPayment = method}
-                    class="flex w-full items-center gap-3 rounded-lg border-2 p-3 transition-all hover:border-primary {selectedPayment === method ? 'border-primary bg-primary/10' : 'border-border'}"
-                  >
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20">
-                      {#if method === "E-Wallet"}💳
-                      {:else if method === "QRIS"}📱
-                      {:else if method === "Bank Transfer"}🏦
-                      {:else}₿{/if}
-                    </div>
-                    <span class="font-medium">{method}</span>
-                  </button>
+                  <div class="overflow-hidden rounded-xl border-2 bg-white/5 transition-all duration-300 {selectedCategory === method.id ? 'border-primary' : 'border-white/10'}">
+                    <!-- Main Payment Category Button -->
+                    <button
+                      onclick={() => handlePaymentClick(method)}
+                      class="flex w-full items-center gap-3 p-3 transition-all hover:bg-white/[0.07] {expandedCategory === method.id ? 'bg-white/[0.05]' : ''}"
+                    >
+                      <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-xl">
+                        {method.icon}
+                      </div>
+                      <span class="flex-1 text-left font-medium">{method.name}</span>
+                      {#if method.hasSubOptions}
+                        <div class="text-sm text-primary transition-transform duration-300 {expandedCategory === method.id ? 'rotate-180' : ''}">
+                          ▼
+                        </div>
+                      {/if}
+                      {#if !method.hasSubOptions && selectedCategory === method.id}
+                        <div class="text-primary text-xl">✓</div>
+                      {/if}
+                    </button>
+                    
+                    <!-- Expandable Sub-Options -->
+                    {#if method.hasSubOptions && expandedCategory === method.id}
+                      <div class="border-t border-white/10 bg-black/20">
+                        {#each method.subOptions as subOption}
+                          <button
+                            onclick={() => handleSubOptionClick(method.id, subOption.id)}
+                            class="flex w-full items-center justify-between px-6 py-3 text-left text-sm transition-all hover:bg-white/[0.07] hover:text-primary {selectedProvider === subOption.id ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-300'}"
+                          >
+                            <span>{subOption.name}</span>
+                            {#if selectedProvider === subOption.id}
+                              <span class="text-primary text-lg">✓</span>
+                            {/if}
+                          </button>
+                        {/each}
+                      </div>
+                    {/if}
+                  </div>
                 {/each}
               </div>
             </div>
