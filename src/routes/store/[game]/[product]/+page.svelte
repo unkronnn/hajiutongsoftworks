@@ -1,9 +1,9 @@
 <script lang="ts">
   import { page } from "$app/state";
   import Header from "$components/header.svelte";
+  import ThemeSelector from "$components/theme-selector.svelte";
   import { Button } from "$ui/button";
   import { Card, CardContent } from "$ui/card";
-  import ThemeSelector from "$components/theme-selector.svelte";
   import { Input } from "$ui/input";
   import { Label } from "$ui/label";
   
@@ -117,11 +117,11 @@
         </Card>
 
         <!-- Thumbnails -->
-        <div class="mb-8 grid grid-cols-4 gap-4">
+        <div class="mb-8 flex gap-3">
           {#each images as img, idx}
             <button
               onclick={() => selectedImage = idx}
-              class="flex aspect-square items-center justify-center rounded-lg border-2 text-4xl transition-all hover:border-primary {selectedImage === idx ? 'border-primary bg-primary/10' : 'border-border bg-muted'}"
+              class="flex w-20 h-20 aspect-square items-center justify-center rounded-lg border-2 text-2xl transition-all hover:border-primary {selectedImage === idx ? 'border-primary bg-primary/10' : 'border-border bg-muted'}"
             >
               {img}
             </button>
