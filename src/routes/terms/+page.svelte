@@ -77,73 +77,81 @@
 
         <!-- Section A: Terms of Purchase -->
         <section class="mb-16">
-          <Card class="overflow-hidden border border-white/5 bg-neutral-900/80 backdrop-blur-sm rounded-3xl">
-            <CardContent class="p-8 space-y-8">
-              <div>
-                <h2 class="text-2xl font-bold mb-6 text-primary">Terms of Purchase</h2>
-              </div>
+          <div class="mb-8">
+            <h2 class="text-3xl font-bold text-primary">Terms of Purchase</h2>
+            <p class="text-muted-foreground mt-2">Please review these terms carefully before proceeding with your purchase</p>
+          </div>
 
-              <!-- Access Denied -->
-              <div class="space-y-3">
-                <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <span class="text-primary">•</span> Access Denied
-                </h3>
-                <p class="text-sm text-muted-foreground leading-relaxed pl-4">
-                  Employees, contractors, and affiliates of anti-cheat companies (including but not limited to EA, Epic Games, Riot Games, Valve, BattlEye, Easy Anti-Cheat, and Vanguard) are strictly prohibited from accessing, purchasing, or using any products or services offered on HAJI UTONG. Any violation will result in immediate termination of service and potential legal action.
+          <!-- Premium Terms Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Term 01: Access Restrictions -->
+            <div class="relative bg-white/5 border border-white/5 rounded-2xl p-6 group hover:bg-white/[0.07] transition-all duration-300">
+              <div class="absolute top-4 left-4 text-4xl font-bold text-green-500/20 select-none">01</div>
+              <div class="mt-8">
+                <h3 class="text-white font-semibold text-lg mb-3">Access Restrictions</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                  Access is strictly prohibited for employees, contractors, or associates of any anti-cheat organizations (including EA, Epic Games, Riot, Valve, etc.). Any unauthorized access will be met with immediate legal action.
                 </p>
               </div>
+            </div>
 
-              <!-- Order Acceptance -->
-              <div class="space-y-3">
-                <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <span class="text-primary">•</span> Order Acceptance
-                </h3>
-                <p class="text-sm text-muted-foreground leading-relaxed pl-4">
-                  HAJI UTONG reserves the right to refuse or cancel any order at our discretion. This includes but is not limited to orders that appear fraudulent, violate our terms of service, or are from prohibited jurisdictions. We may require additional verification for certain orders.
+            <!-- Term 02: All Sales Are Final -->
+            <div class="relative bg-white/5 border border-white/5 rounded-2xl p-6 group hover:bg-white/[0.07] transition-all duration-300">
+              <div class="absolute top-4 left-4 text-4xl font-bold text-green-500/20 select-none">02</div>
+              <div class="mt-8">
+                <h3 class="text-white font-semibold text-lg mb-3">All Sales Are Final</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                  Due to the nature of digital software, we do not offer refunds once a license key has been redeemed or used. Exceptions are only made for unresolvable technical incompatibility verified by our support team.
                 </p>
               </div>
+            </div>
 
-              <!-- Pricing and Payment -->
-              <div class="space-y-3">
-                <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <span class="text-primary">•</span> Pricing and Payment
-                </h3>
-                <p class="text-sm text-muted-foreground leading-relaxed pl-4">
-                  All prices are listed in IDR (Indonesian Rupiah) and USD (United States Dollar). Prices are subject to change without notice. Payment must be received in full before product delivery. Once a subscription or license period has begun, no refunds will be issued for partial usage or early cancellation.
+            <!-- Term 03: Usage Risk & Liability -->
+            <div class="relative bg-white/5 border border-white/5 rounded-2xl p-6 group hover:bg-white/[0.07] transition-all duration-300">
+              <div class="absolute top-4 left-4 text-4xl font-bold text-green-500/20 select-none">03</div>
+              <div class="mt-8">
+                <h3 class="text-white font-semibold text-lg mb-3">Usage Risk & Liability</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                  By purchasing, you acknowledge the inherent risks of using third-party software in online games. HAJI UTONG is not liable for any account suspensions, bans, or loss of in-game progress. Use responsibly on alternative accounts.
                 </p>
               </div>
+            </div>
 
-              <!-- Payment and Refund -->
-              <div class="space-y-3">
-                <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <span class="text-primary">•</span> Payment and Refund Policy
-                </h3>
-                <p class="text-sm text-muted-foreground leading-relaxed pl-4">
-                  <strong class="text-foreground">All sales are final.</strong> Refunds are only issued in exceptional circumstances where the software is technically incompatible with your system and our support team has made reasonable attempts to resolve the issue without success. If a refund is approved, a 10% service fee will be deducted from the refund amount to cover processing costs. Refund requests must be submitted within 48 hours of purchase.
+            <!-- Term 04: License Termination -->
+            <div class="relative bg-white/5 border border-white/5 rounded-2xl p-6 group hover:bg-white/[0.07] transition-all duration-300">
+              <div class="absolute top-4 left-4 text-4xl font-bold text-green-500/20 select-none">04</div>
+              <div class="mt-8">
+                <h3 class="text-white font-semibold text-lg mb-3">License Termination</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                  We reserve the right to revoke license access without refund if we detect suspicious activity, chargebacks, attempts to crack/debug our software, or violation of our community guidelines.
                 </p>
               </div>
+            </div>
 
-              <!-- Assumption of Risk -->
-              <div class="space-y-3">
-                <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <span class="text-primary">•</span> Assumption of Risk
-                </h3>
-                <p class="text-sm text-muted-foreground leading-relaxed pl-4">
-                  By purchasing and using HAJI UTONG products, you acknowledge and accept that using third-party software in online games carries an inherent risk of account suspension, permanent ban, or other penalties imposed by game developers or publishers. HAJI UTONG is not responsible for any account actions, including but not limited to bans, suspensions, or loss of in-game items or progress. We strongly recommend using our products on alternate accounts only.
+            <!-- Term 05: Service Updates -->
+            <div class="relative bg-white/5 border border-white/5 rounded-2xl p-6 group hover:bg-white/[0.07] transition-all duration-300">
+              <div class="absolute top-4 left-4 text-4xl font-bold text-green-500/20 select-none">05</div>
+              <div class="mt-8">
+                <h3 class="text-white font-semibold text-lg mb-3">Service Updates</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                  Software status (Undetected/Updating) can change at any time. Compensation for downtime is provided at our discretion in the form of extra time added to your subscription.
                 </p>
               </div>
+            </div>
 
-              <!-- Limitation of Liability -->
-              <div class="space-y-3">
-                <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <span class="text-primary">•</span> Limitation of Liability
-                </h3>
-                <p class="text-sm text-muted-foreground leading-relaxed pl-4">
-                  HAJI UTONG shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, use, goodwill, or other intangible losses resulting from your access to or use of our products and services. Our total liability shall not exceed the amount paid by you for the specific product or service in question.
+            <!-- Term 06: HWID Lock -->
+            <div class="relative bg-white/5 border border-white/5 rounded-2xl p-6 group hover:bg-white/[0.07] transition-all duration-300">
+              <div class="absolute top-4 left-4 text-4xl font-bold text-green-500/20 select-none">06</div>
+              <div class="mt-8">
+                <h3 class="text-white font-semibold text-lg mb-3">HWID Lock</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                  Keys are locked to your specific Hardware ID (HWID) upon first activation. HWID resets are available but subject to review to prevent account sharing.
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+
+          </div>
         </section>
 
         <!-- Section B: FAQ Accordion -->
