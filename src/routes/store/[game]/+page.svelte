@@ -75,10 +75,10 @@
             <div class="absolute -inset-px rounded-3xl bg-linear-to-b from-border to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             
             <!-- Card with Full Bleed Background -->
-            <Card class="relative aspect-[3/4] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20 border border-white/10 bg-neutral-900 rounded-3xl p-0">
+            <Card class="relative aspect-square overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20 border border-white/10 bg-neutral-900 rounded-3xl p-0">
               <!-- Background Image/Gradient (Full Bleed) -->
               <div class="absolute inset-0 w-full h-full">
-                <div class="flex w-full h-full items-center justify-center bg-gradient-to-br from-primary/30 via-neutral-800 to-secondary/30">
+                <div class="flex w-full h-full items-center justify-center bg-gradient-to-br from-primary/30 via-neutral-800 to-secondary/30 object-cover">
                   <div class="text-7xl opacity-20">🛡️</div>
                 </div>
               </div>
