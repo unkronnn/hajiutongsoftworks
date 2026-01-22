@@ -1,18 +1,18 @@
-import { char, index, pgTable, serial, text, timestamp, unique } from "drizzle-orm/pg-core";
+import { char, index, int, mysqlTable, timestamp, unique, varchar } from "drizzle-orm/mysql-core";
 import { apikey } from "./auth-schema";
 import { mcuser } from "./mc-user";
 
-export const verificationCodes = pgTable(
+export const verificationCodes = mysqlTable(
   "verification_codes",
   {
-    id: serial("id").primaryKey(),
+    id: int("id").primaryKey().autoincrement(),
     code: char("code", { length: 6 }),
     expiration: timestamp("expiration").notNull(),
 
-    mcuserId: text("mcuser_id")
+    mcuserId: varchar("mcuser_id", { length: 255 })
       .notNull()
       .references(() => mcuser.id),
-    appApiKeyId: text("app_api_key_id")
+    appApiKeyId: varchar("app_api_key_id", { length: 255 })
       .notNull()
       .references(() => apikey.id, { onDelete: "cascade" }),
 

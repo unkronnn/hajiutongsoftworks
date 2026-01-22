@@ -1,10 +1,10 @@
 import { relations } from "drizzle-orm";
-import { boolean, index, integer, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, index, int, json, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
-export const user = pgTable("user", {
-  id: text("id").primaryKey(),
+export const user = mysqlTable("user", {
+  id: varchar("id", { length: 255 }).primaryKey(),
   name: text("name").notNull(),
-  email: text("email").notNull().unique(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -14,32 +14,32 @@ export const user = pgTable("user", {
     .notNull()
 });
 
-export const session = pgTable(
+export const session = mysqlTable(
   "session",
   {
-    id: text("id").primaryKey(),
+    id: varchar("id", { length: 255 }).primaryKey(),
     expiresAt: timestamp("expires_at").notNull(),
-    token: text("token").notNull().unique(),
+    token: varchar("token", { length: 500 }).notNull().unique(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
-    userId: text("user_id")
+    userId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => user.id, { onDelete: "cascade" })
   },
   (table) => [index("session_userId_idx").on(table.userId)]
 );
 
-export const account = pgTable(
+export const account = mysqlTable(
   "account",
   {
-    id: text("id").primaryKey(),
+    id: varchar("id", { length: 255 }).primaryKey(),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
-    userId: text("user_id")
+    userId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     accessToken: text("access_token"),
@@ -57,11 +57,11 @@ export const account = pgTable(
   (table) => [index("account_userId_idx").on(table.userId)]
 );
 
-export const verification = pgTable(
+export const verification = mysqlTable(
   "verification",
   {
-    id: text("id").primaryKey(),
-    identifier: text("identifier").notNull(),
+    id: varchar("id", { length: 255 }).primaryKey(),
+    identifier: varchar("identifier", { length: 255 }).notNull(),
     value: text("value").notNull(),
     expiresAt: timestamp("expires_at").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -73,17 +73,17 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
 
-export const passkey = pgTable(
+export const passkey = mysqlTable(
   "passkey",
   {
-    id: text("id").primaryKey(),
+    id: varchar("id", { length: 255 }).primaryKey(),
     name: text("name"),
     publicKey: text("public_key").notNull(),
-    userId: text("user_id")
+    userId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    credentialID: text("credential_id").notNull(),
-    counter: integer("counter").notNull(),
+    credentialID: varchar("credential_id", { length: 500 }).notNull(),
+    counter: int("counter").notNull(),
     deviceType: text("device_type").notNull(),
     backedUp: boolean("backed_up").notNull(),
     transports: text("transports"),
@@ -93,115 +93,115 @@ export const passkey = pgTable(
   (table) => [index("passkey_userId_idx").on(table.userId), index("passkey_credentialID_idx").on(table.credentialID)]
 );
 
-export const jwks = pgTable("jwks", {
-  id: text("id").primaryKey(),
+export const jwks = mysqlTable("jwks", {
+  id: varchar("id", { length: 255 }).primaryKey(),
   publicKey: text("public_key").notNull(),
   privateKey: text("private_key").notNull(),
   createdAt: timestamp("created_at").notNull(),
   expiresAt: timestamp("expires_at")
 });
 
-export const oauthClient = pgTable("oauth_client", {
-  id: text("id").primaryKey(),
-  clientId: text("client_id").notNull().unique(),
+export const oauthClient = mysqlTable("oauth_client", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  clientId: varchar("client_id", { length: 255 }).notNull().unique(),
   clientSecret: text("client_secret"),
   disabled: boolean("disabled").default(false),
   skipConsent: boolean("skip_consent"),
   enableEndSession: boolean("enable_end_session"),
-  scopes: text("scopes").array(),
-  userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+  scopes: text("scopes"),
+  userId: varchar("user_id", { length: 255 }).references(() => user.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at"),
   updatedAt: timestamp("updated_at"),
   name: text("name"),
   uri: text("uri"),
   icon: text("icon"),
-  contacts: text("contacts").array(),
+  contacts: text("contacts"),
   tos: text("tos"),
   policy: text("policy"),
   softwareId: text("software_id"),
   softwareVersion: text("software_version"),
   softwareStatement: text("software_statement"),
-  redirectUris: text("redirect_uris").array().notNull(),
-  postLogoutRedirectUris: text("post_logout_redirect_uris").array(),
+  redirectUris: text("redirect_uris").notNull(),
+  postLogoutRedirectUris: text("post_logout_redirect_uris"),
   tokenEndpointAuthMethod: text("token_endpoint_auth_method"),
-  grantTypes: text("grant_types").array(),
-  responseTypes: text("response_types").array(),
+  grantTypes: text("grant_types"),
+  responseTypes: text("response_types"),
   public: boolean("public"),
   type: text("type"),
-  referenceId: text("reference_id"),
-  metadata: jsonb("metadata")
+  referenceId: varchar("reference_id", { length: 255 }),
+  metadata: json("metadata")
 });
 
-export const oauthRefreshToken = pgTable("oauth_refresh_token", {
-  id: text("id").primaryKey(),
-  token: text("token").notNull(),
-  clientId: text("client_id")
+export const oauthRefreshToken = mysqlTable("oauth_refresh_token", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  token: varchar("token", { length: 500 }).notNull(),
+  clientId: varchar("client_id", { length: 255 })
     .notNull()
     .references(() => oauthClient.clientId, { onDelete: "cascade" }),
-  sessionId: text("session_id").references(() => session.id, {
+  sessionId: varchar("session_id", { length: 255 }).references(() => session.id, {
     onDelete: "set null"
   }),
-  userId: text("user_id")
+  userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  referenceId: text("reference_id"),
+  referenceId: varchar("reference_id", { length: 255 }),
   expiresAt: timestamp("expires_at"),
   createdAt: timestamp("created_at"),
   revoked: timestamp("revoked"),
-  scopes: text("scopes").array().notNull()
+  scopes: text("scopes").notNull()
 });
 
-export const oauthAccessToken = pgTable("oauth_access_token", {
-  id: text("id").primaryKey(),
-  token: text("token").unique(),
-  clientId: text("client_id")
+export const oauthAccessToken = mysqlTable("oauth_access_token", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  token: varchar("token", { length: 500 }).unique(),
+  clientId: varchar("client_id", { length: 255 })
     .notNull()
     .references(() => oauthClient.clientId, { onDelete: "cascade" }),
-  sessionId: text("session_id").references(() => session.id, {
+  sessionId: varchar("session_id", { length: 255 }).references(() => session.id, {
     onDelete: "set null"
   }),
-  userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
-  referenceId: text("reference_id"),
-  refreshId: text("refresh_id").references(() => oauthRefreshToken.id, {
+  userId: varchar("user_id", { length: 255 }).references(() => user.id, { onDelete: "cascade" }),
+  referenceId: varchar("reference_id", { length: 255 }),
+  refreshId: varchar("refresh_id", { length: 255 }).references(() => oauthRefreshToken.id, {
     onDelete: "cascade"
   }),
   expiresAt: timestamp("expires_at"),
   createdAt: timestamp("created_at"),
-  scopes: text("scopes").array().notNull()
+  scopes: text("scopes").notNull()
 });
 
-export const oauthConsent = pgTable("oauth_consent", {
-  id: text("id").primaryKey(),
-  clientId: text("client_id")
+export const oauthConsent = mysqlTable("oauth_consent", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  clientId: varchar("client_id", { length: 255 })
     .notNull()
     .references(() => oauthClient.clientId, { onDelete: "cascade" }),
-  userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
-  referenceId: text("reference_id"),
-  scopes: text("scopes").array().notNull(),
+  userId: varchar("user_id", { length: 255 }).references(() => user.id, { onDelete: "cascade" }),
+  referenceId: varchar("reference_id", { length: 255 }),
+  scopes: text("scopes").notNull(),
   createdAt: timestamp("created_at"),
   updatedAt: timestamp("updated_at")
 });
 
-export const apikey = pgTable(
+export const apikey = mysqlTable(
   "apikey",
   {
-    id: text("id").primaryKey(),
+    id: varchar("id", { length: 255 }).primaryKey(),
     name: text("name"),
     start: text("start"),
     prefix: text("prefix"),
-    key: text("key").notNull(),
-    userId: text("user_id")
+    key: varchar("key", { length: 255 }).notNull(),
+    userId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    refillInterval: integer("refill_interval"),
-    refillAmount: integer("refill_amount"),
+    refillInterval: int("refill_interval"),
+    refillAmount: int("refill_amount"),
     lastRefillAt: timestamp("last_refill_at"),
     enabled: boolean("enabled").default(true),
     rateLimitEnabled: boolean("rate_limit_enabled").default(true),
-    rateLimitTimeWindow: integer("rate_limit_time_window").default(86400000),
-    rateLimitMax: integer("rate_limit_max").default(10),
-    requestCount: integer("request_count").default(0),
-    remaining: integer("remaining"),
+    rateLimitTimeWindow: int("rate_limit_time_window").default(86400000),
+    rateLimitMax: int("rate_limit_max").default(10),
+    requestCount: int("request_count").default(0),
+    remaining: int("remaining"),
     lastRequest: timestamp("last_request"),
     expiresAt: timestamp("expires_at"),
     createdAt: timestamp("created_at").notNull(),
@@ -212,14 +212,14 @@ export const apikey = pgTable(
   (table) => [index("apikey_key_idx").on(table.key), index("apikey_userId_idx").on(table.userId)]
 );
 
-export const minecraftAccount = pgTable("minecraft_account", {
-  id: text("id")
+export const minecraftAccount = mysqlTable("minecraft_account", {
+  id: varchar("id", { length: 255 })
     .primaryKey()
     .$default(() => crypto.randomUUID()),
-  uuid: text("uuid").notNull().unique(),
-  username: text("username").notNull(),
+  uuid: varchar("uuid", { length: 255 }).notNull().unique(),
+  username: varchar("username", { length: 255 }).notNull(),
   primary: boolean("primary").notNull().default(false),
-  userId: text("user_id")
+  userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),

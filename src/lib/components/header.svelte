@@ -45,12 +45,6 @@
                 </a>
               </li>
             {/each}
-            <!-- Temporary Test Invoice Link -->
-            <li>
-              <a href="/invoice/test-preview" class="block text-primary duration-150 hover:text-primary/80 font-semibold">
-                <span>🧾 Test Invoice</span>
-              </a>
-            </li>
           </ul>
         </div>
         {#if showLoginButtons}
@@ -64,12 +58,6 @@
                     </Button>
                   </li>
                 {/each}
-                <!-- Temporary Test Invoice Link (Mobile) -->
-                <li>
-                  <Button href="/invoice/test-preview" variant="link" class="block text-primary duration-150 hover:text-primary/80 font-semibold">
-                    <span>🧾 Test Invoice</span>
-                  </Button>
-                </li>
               </ul>
             </div>
             <div class="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">

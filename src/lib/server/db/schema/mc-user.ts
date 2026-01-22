@@ -1,6 +1,6 @@
-import { char, pgTable, timestamp } from "drizzle-orm/pg-core";
+import { char, mysqlTable, timestamp } from "drizzle-orm/mysql-core";
 
-export const mcuser = pgTable("mcuser", {
+export const mcuser = mysqlTable("mcuser", {
   id: char("mcid", { length: 32 }).notNull().primaryKey().unique(),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),

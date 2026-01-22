@@ -105,6 +105,7 @@
   menuItems={[
     { name: "Home", href: "/" },
     { name: "Store", href: "/store" },
+    { name: "Status", href: "/status" },
     { name: "Feedback", href: "/feedback" },
     { name: "Terms & FAQ", href: "/terms" }
   ]} />
