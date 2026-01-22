@@ -2,6 +2,7 @@ import { building } from "$app/environment";
 import { auth } from "$lib/server/auth"; // path to your auth file
 // Disabled for landing page - no database needed
 // import { cleanupDbCron } from "$lib/server/crons/cleanup-db";
+import { adminMiddleware } from "$lib/server/middleware/admin";
 import { redirect, type Handle, type ServerInit } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 import { svelteKitHandler } from "better-auth/svelte-kit";
@@ -93,4 +94,4 @@ const headersHandler = (async ({ event, resolve }) => {
   return response;
 }) satisfies Handle;
 
-export const handle = sequence(betterAuthHandler, betterAuthSessionHandler, protectedHandler, headersHandler) satisfies Handle;
+export const handle = sequence(betterAuthHandler, betterAuthSessionHandler, adminMiddleware, protectedHandler, headersHandler) satisfies Handle;
