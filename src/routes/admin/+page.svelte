@@ -4,10 +4,10 @@
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
 	import * as Table from "$lib/components/ui/table";
-	import Activity from "lucide-svelte/icons/activity";
-	import Database from "lucide-svelte/icons/database";
-	import Shield from "lucide-svelte/icons/shield";
-	import Users from "lucide-svelte/icons/users";
+	import Activity from "@lucide/svelte/icons/activity";
+	import Database from "@lucide/svelte/icons/database";
+	import Shield from "@lucide/svelte/icons/shield";
+	import Users from "@lucide/svelte/icons/users";
 
 	let { data } = $props();
 

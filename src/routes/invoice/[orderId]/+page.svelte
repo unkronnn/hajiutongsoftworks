@@ -5,7 +5,7 @@
   import ThemeSelector from "$components/theme-selector.svelte";
   import { Button } from "$ui/button";
   import { Card, CardContent } from "$ui/card";
-  import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
+  import RefreshCcw from "@lucide/svelte/icons/refresh-ccw";
   
   const orderId = $derived(page.params.orderId);
   
