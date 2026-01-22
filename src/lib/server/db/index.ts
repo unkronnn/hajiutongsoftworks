@@ -7,5 +7,5 @@ const { DATABASE_URL } = env;
 
 const poolConnection = mysql.createPool(DATABASE_URL);
 
-export const db = drizzle(poolConnection, { schema });
+export const db = drizzle(poolConnection, { schema, mode: "default" });
 export type DB = typeof db;
