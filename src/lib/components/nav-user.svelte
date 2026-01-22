@@ -52,6 +52,17 @@
           </div>
         </DropdownMenu.Label>
         <DropdownMenu.Separator />
+        {#if user?.role === "admin"}
+          <DropdownMenu.Item>
+            {#snippet child({ props })}
+              <a href={resolve("/admin")} {...props}>
+                <ShieldIcon />
+                Admin Panel
+              </a>
+            {/snippet}
+          </DropdownMenu.Item>
+          <DropdownMenu.Separator />
+        {/if}
         <DropdownMenu.Item>
           {#snippet child({ props })}
             <a href={resolve("/logout")} {...props}>
