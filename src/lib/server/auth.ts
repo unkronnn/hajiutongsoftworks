@@ -23,7 +23,7 @@ const options = {
   appName: "HAJI UTONG",
   baseURL: PUBLIC_BASE_URL,
   database: drizzleAdapter(db, {
-    provider: "pg" // or "mysql", "sqlite"
+    provider: "mysql"
   }),
   account: {
     accountLinking: {
