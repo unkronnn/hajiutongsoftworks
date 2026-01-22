@@ -13,7 +13,7 @@
       <h2 class="text-4xl font-semibold text-balance lg:text-5xl">Start Building</h2>
       <p class="mt-4">Get started by checking out our documentation and creating an account.</p>
       <div class="mt-12 flex flex-wrap justify-center gap-4">
-        <Button href="/dashboard" size="lg">Get Started</Button>
+        <Button href="/store" size="lg">Get Started</Button>
         <Button href="https://docs.mc-id.com" size="lg" variant="outline">View Docs</Button>
       </div>
     </div>

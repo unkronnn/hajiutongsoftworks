@@ -33,7 +33,7 @@
       autoFill,
       fetchOptions: {
         onSuccess: (_context) => {
-          goto(resolve("/dashboard"));
+          goto(resolve("/store"));
         },
         onError: (error) => {
           console.error("Failed to login with passkey", error);

@@ -54,7 +54,7 @@ export const actions: Actions = {
       }
     }
 
-    redirect(307, "/dashboard");
+    redirect(307, "/store");
   },
 
   signup: async (event) => {
@@ -123,6 +123,6 @@ export const actions: Actions = {
     }
 
     // dashboard redirect
-    redirect(307, "/dashboard");
+    redirect(307, "/store");
   }
 };

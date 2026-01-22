@@ -13,8 +13,8 @@
       <h2 class="text-4xl font-semibold text-balance lg:text-5xl">Ready to get started?</h2>
       <p class="mt-4">Creating an account ensures that you don't have to use Minecraft again to log into an app</p>
       <div class="mt-12 flex flex-wrap justify-center gap-4">
-        <Button href="/dashboard" size="lg">Get Started</Button>
-        <Button href="/dashboard" size="lg" variant="outline">Login</Button>
+        <Button href="/store" size="lg">Get Started</Button>
+        <Button href="/store" size="lg" variant="outline">Login</Button>
       </div>
     </div>
   </div>
