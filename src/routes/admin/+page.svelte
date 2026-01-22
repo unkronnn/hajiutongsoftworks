@@ -1,10 +1,13 @@
 <script lang="ts">
 	import Header from "$components/header.svelte";
-	import { Badge } from "$ui/badge";
-	import { Button } from "$ui/button";
-	import * as Card from "$ui/card";
-	import * as Table from "$ui/table";
-	import { Activity, Database, Shield, Users } from "lucide-svelte";
+	import { Badge } from "$lib/components/ui/badge";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import * as Table from "$lib/components/ui/table";
+	import Activity from "lucide-svelte/icons/activity";
+	import Database from "lucide-svelte/icons/database";
+	import Shield from "lucide-svelte/icons/shield";
+	import Users from "lucide-svelte/icons/users";
 
 	let { data } = $props();
 
@@ -20,9 +23,9 @@
 
 	const stats = $derived({
 		totalUsers: data.users.length,
-		adminUsers: data.users.filter((u) => u.role === "admin").length,
-		regularUsers: data.users.filter((u) => u.role === "user").length,
-		verifiedEmails: data.users.filter((u) => u.emailVerified).length
+		adminUsers: data.users.filter((u: any) => u.role === "admin").length,
+		regularUsers: data.users.filter((u: any) => u.role === "user").length,
+		verifiedEmails: data.users.filter((u: any) => u.emailVerified).length
 	});
 </script>
 
@@ -120,7 +123,7 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each data.users as user}
+						{#each data.users as user (user.id)}
 							<Table.Row>
 								<Table.Cell class="font-medium">
 									<div class="flex items-center gap-2">
