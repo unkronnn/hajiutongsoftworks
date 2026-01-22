@@ -42,13 +42,12 @@ const betterAuthSessionHandler = (async ({ event, resolve }) => {
 
   event.locals.session = session?.session;
   event.locals.user = session?.user;
-  event.locals.primaryMcAccount = session?.primaryMcAccount;
 
   return resolve(event);
 }) satisfies Handle;
 
 const protectedHandler = (async ({ event, resolve }) => {
-  const { locals, route, url } = event;
+  const { locals, route } = event;
   if (!locals.user) {
     if (route.id?.includes(protectedRouteGroupName) || event.isRemoteRequest) {
       redirect(307, signInPath);
@@ -57,12 +56,6 @@ const protectedHandler = (async ({ event, resolve }) => {
   if (locals.user && locals.session) {
     if (route.id?.startsWith(signInPath)) {
       redirect(307, "/dashboard");
-    }
-  }
-  if (!locals.primaryMcAccount) {
-    if (route.id?.includes(protectedRouteGroupName) && !url.pathname.startsWith("/dashboard/connections/minecraft")) {
-      console.info("Redirecting to Minecraft connections setup as no primary Minecraft account is linked.");
-      redirect(307, "/dashboard/connections/minecraft");
     }
   }
   return resolve(event);

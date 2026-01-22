@@ -132,16 +132,7 @@ export const auth = betterAuth({
   plugins: [
     ...(options.plugins ?? []),
     customSession(async ({ user, session }) => {
-      const primaryMcAccount = await db.query.minecraftAccount.findFirst({
-        where: (mc, { eq, and }) => and(eq(mc.userId, user.id), eq(mc.primary, true)),
-        orderBy: (mc, { desc }) => [desc(mc.primary), desc(mc.createdAt)],
-        columns: {
-          uuid: true,
-          username: true
-        }
-      });
       return {
-        primaryMcAccount,
         user: {
           ...user
         },
